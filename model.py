@@ -1,7 +1,7 @@
 import json
 import os
 
-class Uporabnik:
+class Uporabnik: ####DODAJ ZAKAJ SE TI NE USPE PRIJAVIT, REGISTRIRAT KER ZDEJ SAM NIMAS POJMA KAJMA
     def __init__(self, uporabnisko_ime, geslo):
         self.uporabnisko_ime = uporabnisko_ime
         self.geslo = geslo
@@ -30,7 +30,7 @@ class Uporabnik:
     def registracija(up_ime, geslo):
         if Uporabnik.preberi(up_ime) is not None:
             raise ValueError("Že obstajate") #dej to tut spremen
-        elif "recept" in Uporabnik.preberi(up_ime):
+        elif "recept" in up_ime:
             raise ValueError("Ime ne sme vsebovati besede \"recept\"")
         else:
             uporabnik = Uporabnik(up_ime, geslo)
@@ -96,17 +96,6 @@ class Recept:
     def shrani_recept(self):
         with open("recept." + self.jed + ".json", "w") as dat:
             json.dump(self.izdelaj_slovar(), dat)
-
-    @staticmethod
-    def odpri_recepte():
-        vsi_recepti = []
-        seznam_datotek = os.listdir()
-        for datoteka in seznam_datotek:
-            if "recept." in datoteka:
-                with open(datoteka) as dat:
-                    slovar = json.load(dat)
-                    vsi_recepti += slovar
-        return vsi_recepti
 
     @staticmethod
     def nalozi_recept(datoteka):

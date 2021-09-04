@@ -14,6 +14,10 @@ def trenutni_uporabnik():
 
 @bottle.get("/")
 def osnovna_stran():
+    bottle.redirect("/prijava")
+
+@bottle.get("/glavna-stran")
+def glavna_stran():
     return bottle.template("osnovna_stran.html")
 
 @bottle.get("/prijava")
@@ -29,7 +33,7 @@ def prijava_post():
     try:
         Uporabnik.prijava(uporabnisko_ime, geslo)
         bottle.response.set_cookie(ime_piskotka, uporabnisko_ime, skrivnost, path="/")
-        bottle.redirect("/")
+        bottle.redirect("/glavna-stran")
     except ValueError:
         return bottle.template("prijava.html")
     
