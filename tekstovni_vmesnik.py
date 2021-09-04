@@ -54,13 +54,20 @@ def poglej_recepte(): #lahko bi zdruzu nekej funkcij skup sam zdej je kar je
         izbira = vnesi_stevilo("> ")
         if 1 <= izbira <= len(seznam_receptov):
             izbrano = seznam_receptov[izbira - 1]
+            pogled = True
             prikazi_recept(izbrano)
+            print("\nZa nadaljevanje pritisnite \"y\"")
+            while pogled:
+                if input("> ") == "y":
+                    pogled = False
+            else:
+                pass
             break
         else:
             print(f"Izberite stevilo med 1 in {len(seznam_receptov)}")        
 
+
 def prikazi_recept(slovar): #dodaj dinamicen prikaz minut
-    pogled = True
     jed = slovar["jed"]
     cas_priprave = str(slovar["cas_priprave"])
     cas_kuhanja = str(slovar["cas_kuhanja"])
@@ -70,12 +77,7 @@ def prikazi_recept(slovar): #dodaj dinamicen prikaz minut
     print("Čas priprave: " + cas_priprave + " (min)")
     print("Čas kuhanja/pečenja: " + cas_kuhanja + " (min)")
     print("Priprava: " + postopek)
-    print("\nZa nadaljevanje pritisnite \"y\"")
-    while pogled:
-        if input("> ") == "y":
-            pogled = False
-        else:
-            pass
+
         
 
 def nov_recept():
@@ -104,8 +106,46 @@ def nov_recept():
     recept.napisi_postopek(opis)
     recept.shrani_recept()
 
+
 def uredi_recept():
-    pass
+    seznam_receptov = naredi_seznam_receptov()
+    for indeks, recept in enumerate(seznam_receptov, 1):
+        ime = recept["jed"]
+        print(f"{indeks}->{ime}")
+    while True: #again ista funkcija k za pregled pac res bi loh skrcu use skp
+        izbira = vnesi_stevilo("> ")
+        if 1 <= izbira <= len(seznam_receptov):
+            izbrano = seznam_receptov[izbira - 1]
+            uredi(izbrano)
+            break
+        else:
+            print(f"Izberite stevilo med 1 in {len(seznam_receptov)}") 
+
+
+def uredi(seznam):
+    while True:
+        prikazi_recept(seznam)
+        print("Kaj želite urediti?")
+        print("1->Čas priprave")
+        print("2->Čas kuhanja/pečenja")
+        print("3->Pripravo")
+        print("4->Nazaj")
+        izbira = vnesi_stevilo("> ")
+        if izbira == 1:
+            print("Kaj želite da je nov čas priprave?")
+            seznam["cas_priprave"] = vnesi_stevilo("> ")
+        elif izbira == 2:
+            print("Kaj želite da je nov čas kuhanja/pečenja?")
+            seznam["cas_kuhanja"] = vnesi_stevilo("> ")
+        elif izbira == 3:
+            print("Napišite nov postopek priprave")
+            seznam["postopek"] = input("> ")
+        elif izbira == 4:
+            return None
+        else:
+            print("Izberite število med 1 in 4")
+
+
 
 def naredi_seznam_receptov(): # seznam v katerem so slovarji!
     recepti = []
