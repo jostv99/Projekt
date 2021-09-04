@@ -5,6 +5,13 @@ ime_piskotka = "uporabnisko_ime"
 skrivnost = "ne izdam je"
 
 
+def trenutni_uporabnik():
+    up_ime = bottle.request.get_cookie(ime_piskotka, secret=skrivnost)
+    if up_ime:
+        return Uporabnik.preberi(up_ime)
+    else:
+        bottle.redirect("/prijava")
+
 @bottle.get("/")
 def osnovna_stran():
     return bottle.template("osnovna_stran.html")
@@ -42,6 +49,12 @@ def registracija_post():
         bottle.redirect("/prijava")
     except ValueError:
         return bottle.template("registracija.html")
+
+@bottle.post("/odjava")
+def odjava():
+    bottle.response.delete_cookie(ime_piskotka)
+    bottle.redirect("/prijava")
+
 
 
 bottle.run(debug=True, reloader=True)

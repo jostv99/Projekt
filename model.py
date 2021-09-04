@@ -1,4 +1,5 @@
 import json
+import os
 
 class Uporabnik:
     def __init__(self, uporabnisko_ime, geslo):
@@ -29,6 +30,8 @@ class Uporabnik:
     def registracija(up_ime, geslo):
         if Uporabnik.preberi(up_ime) is not None:
             raise ValueError("Že obstajate") #dej to tut spremen
+        elif "recept" in Uporabnik.preberi(up_ime):
+            raise ValueError("Ime ne sme vsebovati besede \"recept\"")
         else:
             uporabnik = Uporabnik(up_ime, geslo)
             uporabnik.shrani()
@@ -56,17 +59,21 @@ class Uporabnik:
     def preveri_geslo(self, dano_geslo):
         return self.geslo == dano_geslo
 
+
+
+
+
+
+
+
 class Recept:
     def __init__(self, jed):
-        self.jed = jed
+        self.jed = str(jed)
         self.cas_priprave = None
         self.cas_kuhanja = None
         self.cas_skupni = None
-        self.sestavine = {}
         self.postopek = None
 
-    def dodaj_sestavino(self, sestavina, kolicina, enota=None):
-            self.sestavine[sestavina] = (kolicina, enota)
 
     def nastavi_cas(self, priprave, kuhanja):
         #cas v min
@@ -83,10 +90,33 @@ class Recept:
             "cas_priprave": self.cas_priprave,
             "cas_kuhanja": self.cas_kuhanja,
             "cas_skupni": self.cas_skupni,
-            "sestavine": self.sestavine,
             "postopek": self.postopek}
 
 
     def shrani_recept(self):
-        with open(self.jed, "w") as dat:
+        with open("recept." + self.jed + ".json", "w") as dat:
             json.dump(self.izdelaj_slovar(), dat)
+
+    @staticmethod
+    def odpri_recepte():
+        vsi_recepti = []
+        seznam_datotek = os.listdir()
+        for datoteka in seznam_datotek:
+            if "recept." in datoteka:
+                with open(datoteka) as dat:
+                    slovar = json.load(dat)
+                    vsi_recepti += slovar
+        return vsi_recepti
+
+    @staticmethod
+    def nalozi_recept(datoteka):
+        try:
+            with open(datoteka) as dat:
+                slovar = json.load(dat)
+                jed = slovar["jed"]
+                cas_priprave = slovar["cas_priprave"]
+                cas_kuhanja = slovar["cas_kuhanja"]
+                cas_skupni = slovar["cas_skupni"]
+                postopek = slovar["postopek"]
+        except FileNotFoundError:
+            return None
