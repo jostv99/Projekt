@@ -61,7 +61,7 @@ class Uporabnik: ####DODAJ ZAKAJ SE TI NE USPE PRIJAVIT, REGISTRIRAT KER ZDEJ SA
 
 
 
-
+ 
 
 
 
@@ -107,5 +107,19 @@ class Recept:
                 cas_kuhanja = slovar["cas_kuhanja"]
                 cas_skupni = slovar["cas_skupni"]
                 postopek = slovar["postopek"]
+        except FileNotFoundError:
+            return None
+
+    @staticmethod
+    def naredi_seznam_receptov(pot):
+        try:
+            recepti = []
+            for datoteka in os.listdir(pot):
+                if "recept" in datoteka:
+                    f = open(datoteka)
+                    slovar = json.load(f)
+                    recepti.append((datoteka, slovar))
+            return recepti
+
         except FileNotFoundError:
             return None

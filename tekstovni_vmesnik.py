@@ -160,7 +160,7 @@ def naredi_seznam_receptov(): # seznam v katerem so slovarji!
             slovar = json.load(f)
             recepti.append((datoteka, slovar))
     return recepti
-
+    # zamenjej z metodo na razredu (za zdej dela tko da sam pust)
 
 
 
