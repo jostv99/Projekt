@@ -2,7 +2,9 @@
 <html>
     <body>
     <h1>Lep kulinaričen pozdrav {{uporabnik.uporabnisko_ime}}!</h1>
-    <p></p>
+    % if napaka:
+    <p class="help is-danger">{{ napaka }}</p>
+    % end    
 
     <a href="/recepti">
         <input type="button" value="Poglej svoje recepte">
