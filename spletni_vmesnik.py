@@ -18,7 +18,7 @@ def osnovna_stran():
 
 @bottle.get("/glavna_stran")
 def glavna_stran():
-    return bottle.template("osnovna_stran.html", uporabnik = trenutni_uporabnik())
+    return bottle.template("osnovna_stran.html", uporabnik = trenutni_uporabnik(), napaka = None)
 
 @bottle.get("/prijava")
 def prijava_get():
@@ -66,8 +66,23 @@ def recepti_get():
     if seznam != None:
         for (datoteka, slovar) in seznam:
             vrni.append(slovar)
-    print(vrni)
     return bottle.template("rec.html", recepti = vrni)
+
+@bottle.post("/recepti")
+def recepti_post():
+    jed = bottle.request.forms.getunicode("ime")
+    seznam = Recept.naredi_seznam_receptov(r"C:\Users\jostv\Documents\GitHub\Projekt")
+    for (datoteka, slovar) in seznam:
+        if jed in datoteka:
+            return bottle.template("rec_pogled.html",
+                                    jed = slovar["jed"],
+                                    cas_priprave = slovar["cas_priprave"],
+                                    cas_kuhanja = slovar["cas_kuhanja"],
+                                    priprava = slovar["postopek"])
+    else:
+        print("nekej ni kul")
+        return bottle.redirect("/recepti")
+
 
 @bottle.get("/uredi_recept")
 def uredi_recept_get():
@@ -79,12 +94,17 @@ def uredi_recept_get():
     print(vrni)
     return bottle.template("uredi_rec.html", recepti = vrni)    
 
+@bottle.post("/uredi_recept")
+def uredi_recept_post():
+    pass
+
+
 
 @bottle.get("/nov_recept")
 def nov_recept_get():
     return bottle.template("nov_rec.html", napaka = None)
 
-@bottle.post("/nov_recept")
+@bottle.post("/nov_recept") #popravi cas samo stevilke-drgac error, nobeno polje ne sme bit prazno
 def nov_recept_get():
     jed = bottle.request.forms.getunicode("jed")
     cas_priprave = bottle.request.forms.getunicode("cas_priprave")
@@ -92,10 +112,10 @@ def nov_recept_get():
     postopek = bottle.request.forms.getunicode("postopek")
     try:
         recept = Recept(jed)
-        recept.nastavi_cas(cas_priprave, cas_kuhanja)
+        recept.nastavi_cas(int(cas_priprave), int(cas_kuhanja))
         recept.napisi_postopek(postopek)
         recept.shrani_recept()
-        bottle.redirect("/glavna_stran")
+        return bottle.template("osnovna_stran.html", uporabnik = trenutni_uporabnik(), napaka = "Recep uspešno zabeležen!")
     except  ValueError as upsala:
         return bottle.template("nov_rec.html", napaka = upsala)
 
