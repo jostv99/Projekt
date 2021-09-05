@@ -6,6 +6,9 @@
         Geslo: <input name="geslo" type="password" />
         <input value="Registracija" type="submit" />
         <br>
+        % if napaka:
+        <p class="help is-danger">{{ napaka }}</p>
+        % end
         <br>Imaš že račun? Prijavi se tu:
         <a href="/prijava">
         <input type="button" value="Prijavi se">

@@ -50,7 +50,7 @@ class Uporabnik: ####DODAJ ZAKAJ SE TI NE USPE PRIJAVIT, REGISTRIRAT KER ZDEJ SA
     def prijava(up_ime, geslo):
         uporabnik = Uporabnik.preberi(up_ime)
         if uporabnik is None:
-            raise ValueError("Ne obstajate!") #hec, spomn se sprement
+            raise ValueError("Uporabniško ime in geslo se ne ujemata") #hec, spomn se sprement
         elif uporabnik.preveri_geslo(geslo):
             return uporabnik
         else:

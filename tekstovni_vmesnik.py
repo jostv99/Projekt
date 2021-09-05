@@ -40,7 +40,7 @@ def tekstovni_vmesnik():
             ("Dodaj nov recept", nov_recept),
             ("Uredi star recept", uredi_recept)
         ]
-        izbira = izberi(moznosti)
+        izbira = izberi(moznosti) #bi blo bols sam preglej + dodaj, pa pr poglej se moznost uredi ampak ok, ce bo cajt
 
         izbira()
 
@@ -67,7 +67,7 @@ def poglej_recepte(): #lahko bi zdruzu nekej funkcij skup sam zdej je kar je
             print(f"Izberite stevilo med 1 in {len(seznam_receptov)}")        
 
 
-def prikazi_recept(slovar): #dodaj dinamicen prikaz minut
+def prikazi_recept(slovar): #dodaj dinamicen prikaz minut, moznost komentarja?
     jed = slovar["jed"]
     cas_priprave = str(slovar["cas_priprave"])
     cas_kuhanja = str(slovar["cas_kuhanja"])
@@ -82,7 +82,7 @@ def prikazi_recept(slovar): #dodaj dinamicen prikaz minut
 
         
 
-def nov_recept():
+def nov_recept(): #dodaj - ime uporabnika k je dodal
     print("Napišite ime jedi:") #popravi, lahko je vec istih imen pa bo problem
     ime = input("> ")
     recept = Recept(ime)
