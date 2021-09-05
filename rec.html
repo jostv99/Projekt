@@ -1,18 +1,21 @@
 <html>
     <h1>Recepti</h1>
     <body>
-    % for slovar in recepti:
     % if len(recepti) == 0:
-        <p>Nimate še shranjenih receptov</p>
+    <p>Nimate še shranjenih receptov</p>
     % else:
+    % for slovar in recepti:
     %   ime = slovar["jed"]
-    <form action="/recepti" method="post">
-    <input name="ime" type="submit" value="{{ime}}" >
-    </form>
+    <a href="/recepti/{{ime}}">
+        {{ime}}
+    </a>
+    <br>
+    % end
+    % end
+    <br>
     <a href="/glavna_stran">
     <input type="button" value="Nazaj na glavno stran">
     </a>
-    % end
     </body>
 
 </html>

@@ -1,9 +1,23 @@
 <html>
-    <h1>Izberite kateri recep želite urediti</h1>
-    % for slovar in recepti:
-    <h2>{{slovar["jed"]}}</h2>
-    % end
-    <a href="/glavna_stran">
-    <input type="button" value="Nazaj na glavno stran">
-    </a>
+    <h1>Izberite kateri recept želite urediti</h1>
+    <body>
+        % if len(recepti) == 0:
+        <p>Nimate še shranjenih receptov</p>
+        % else:
+        % for slovar in recepti:
+        %   ime = slovar["jed"]
+        <a href="/uredi_recept/{{ime}}">
+            {{ime}}
+        </a>
+        <br>
+        <!-- <form action="/uredi_recept" method="post">
+        <input name="ime" type="submit" value="{{ime}}" >
+        </form> -->
+        % end
+        % end
+        <br>
+        <a href="/glavna_stran">
+        <input type="button" value="Nazaj na glavno stran">
+        </a>
+        </body>
 </html>

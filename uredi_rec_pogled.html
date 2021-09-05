@@ -1,0 +1,23 @@
+<html>
+    <h1>Uredi recept</h1>
+    <form action="/uredi_recept" method="post">
+        Jed: <input name="jed" type="text" value="{{jed}}" disabled/>
+        <br>
+        Čas priprave: <input name="cas_priprave" type="text" value="{{cas_priprave}}"/> (v minutah)
+        <br>
+        Čas kuhanja/pečenja: <input name="cas_kuhanja" type="text" value="{{cas_kuhanja}}"/> (v minutah)
+        <br>
+        Kratek opis priprave jedi s potrebnimi sestavinami: 
+        <textarea rows="5" cols="40" name="postopek">{{priprava}}</textarea>
+        <br>
+        <input type ="submit" value="Potrdi"/>
+        <br>
+    </form>
+    <form action="/izbrisi_recept/{{jed}}" method="post">
+        <input type="submit" value="Izbriši recept"/>
+    </form>
+    <br>
+    <a href="/glavna_stran">
+        <input type="button" value="Nazaj na glavno stran">
+    </a>
+</html>

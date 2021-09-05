@@ -98,17 +98,9 @@ class Recept:
             json.dump(self.izdelaj_slovar(), dat)
 
     @staticmethod
-    def nalozi_recept(datoteka):
-        try:
-            with open(datoteka) as dat:
-                slovar = json.load(dat)
-                jed = slovar["jed"]
-                cas_priprave = slovar["cas_priprave"]
-                cas_kuhanja = slovar["cas_kuhanja"]
-                cas_skupni = slovar["cas_skupni"]
-                postopek = slovar["postopek"]
-        except FileNotFoundError:
-            return None
+    def shrani_recept_slovar(slovar):
+        with open("recept." + slovar["jed"] + ".json", "w") as dat:
+            json.dump(slovar, dat)
 
     @staticmethod
     def naredi_seznam_receptov(pot):

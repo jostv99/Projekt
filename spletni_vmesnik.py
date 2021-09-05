@@ -12,13 +12,17 @@ def trenutni_uporabnik():
     else:
         bottle.redirect("/prijava")
 
+##############
+
 @bottle.get("/")
 def osnovna_stran():
     bottle.redirect("/prijava")
 
 @bottle.get("/glavna_stran")
 def glavna_stran():
-    return bottle.template("osnovna_stran.html", uporabnik = trenutni_uporabnik(), napaka = None)
+    return bottle.template("osnovna_stran.html",
+                            uporabnik = trenutni_uporabnik(),
+                            napaka = None)
 
 @bottle.get("/prijava")
 def prijava_get():
@@ -59,19 +63,21 @@ def odjava():
     bottle.response.delete_cookie(ime_piskotka)
     bottle.redirect("/prijava")
 
+###############################
+
+
 @bottle.get("/recepti")
 def recepti_get():
     vrni = []
-    seznam = Recept.naredi_seznam_receptov(r"C:\Users\jostv\Documents\GitHub\Projekt") #POPRAV DA BO NORMALN DELAL
+    seznam = Recept.naredi_seznam_receptov(os.path.dirname(os.path.abspath(__file__))) #POPRAV DA BO NORMALN DELAL
     if seznam != None:
         for (datoteka, slovar) in seznam:
             vrni.append(slovar)
     return bottle.template("rec.html", recepti = vrni)
 
-@bottle.post("/recepti")
-def recepti_post():
-    jed = bottle.request.forms.getunicode("ime")
-    seznam = Recept.naredi_seznam_receptov(r"C:\Users\jostv\Documents\GitHub\Projekt")
+@bottle.get("/recepti/<jed>")
+def recepti_post(jed):
+    seznam = Recept.naredi_seznam_receptov(os.path.dirname(os.path.abspath(__file__)))
     for (datoteka, slovar) in seznam:
         if jed in datoteka:
             return bottle.template("rec_pogled.html",
@@ -80,24 +86,48 @@ def recepti_post():
                                     cas_kuhanja = slovar["cas_kuhanja"],
                                     priprava = slovar["postopek"])
     else:
-        print("nekej ni kul")
         return bottle.redirect("/recepti")
 
 
 @bottle.get("/uredi_recept")
 def uredi_recept_get():
     vrni = []
-    seznam = Recept.naredi_seznam_receptov(r"C:\Users\jostv\Documents\GitHub\Projekt") #POPRAV DA BO NORMALN DELAL
+    seznam = Recept.naredi_seznam_receptov(os.path.dirname(os.path.abspath(__file__))) #POPRAV DA BO NORMALN DELAL
     if seznam != None:
         for (datoteka, slovar) in seznam:
             vrni.append(slovar)
-    print(vrni)
     return bottle.template("uredi_rec.html", recepti = vrni)    
+
+@bottle.get("/uredi_recept/<jed>")
+def uredi_recept_get_jed(jed):
+    seznam = Recept.naredi_seznam_receptov(os.path.dirname(os.path.abspath(__file__)))
+    for (datoteka, slovar) in seznam:
+        if jed in datoteka:
+            return bottle.template("uredi_rec_pogled.html",
+                                    jed = slovar["jed"],
+                                    cas_priprave = slovar["cas_priprave"],
+                                    cas_kuhanja = slovar["cas_kuhanja"],
+                                    priprava = slovar["postopek"])
+    else:
+        return bottle.redirect("/recepti")
 
 @bottle.post("/uredi_recept")
 def uredi_recept_post():
-    pass
+    jed = bottle.request.forms.getunicode("ime")
+    seznam = Recept.naredi_seznam_receptov(os.path.dirname(os.path.abspath(__file__)))
 
+    s = None
+    for (datoteka, slovar) in seznam:
+        if jed in datoteka:
+            s = slovar
+    
+    if s is not None:
+        s["cas_priprave"] = bottle.request.forms.getunicode("cas_priprave")
+        s["cas_kuhanja"] = bottle.request.forms.getunicode("cas_kuhanja")
+        s["postopek"] = bottle.request.forms.getunicode("postopek")
+        Recept.shrani_recept_slovar(s)
+    else:
+        return bottle.redirect("/recepti")
 
 
 @bottle.get("/nov_recept")
@@ -110,6 +140,10 @@ def nov_recept_get():
     cas_priprave = bottle.request.forms.getunicode("cas_priprave")
     cas_kuhanja = bottle.request.forms.getunicode("cas_kuhanja")
     postopek = bottle.request.forms.getunicode("postopek")
+    
+    if len(jed) == 0 or len(cas_priprave) == 0 or len(cas_kuhanja) == 0 or len(postopek) == 0:
+        return bottle.template("nov_rec.html", napaka = "Izpolniti morate vsa polja")
+
     try:
         recept = Recept(jed)
         recept.nastavi_cas(int(cas_priprave), int(cas_kuhanja))
@@ -118,5 +152,10 @@ def nov_recept_get():
         return bottle.template("osnovna_stran.html", uporabnik = trenutni_uporabnik(), napaka = "Recep uspešno zabeležen!")
     except  ValueError as upsala:
         return bottle.template("nov_rec.html", napaka = upsala)
+
+@bottle.post("/izbrisi_recept/<jed>")
+def izbrisi_recept(jed):
+    os.remove(f"recept.{jed}.json")
+    return bottle.redirect("/glavna_stran")
 
 bottle.run(debug=True, reloader=True)
